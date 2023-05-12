@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          pip3 install --upgrade pip3
-          pip3 install -r requirements.txt
+          pip install --upgrade pip
+          pip install -r requirements.txt
           docker run --rm -d --network host --name pluto_cluster gcr.io/hoprassociation/hopr-pluto:1.92.7
           docker logs -f pluto_cluster
           ./wait-for host:13305 -t 200
