@@ -1,5 +1,4 @@
 name: HOPR Unit Tests
-description: Running the unit tests
 
 # Controls when the workflow will run
 on:
