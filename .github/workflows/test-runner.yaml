@@ -24,7 +24,7 @@ jobs:
         uses: onichandame/python-test-action@master
         with:
           deps_list: 'requirements.txt'
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
@@ -34,5 +34,11 @@ jobs:
         run: |
           ruff --format=github --target-version=py311 .
         continue-on-error: true
-      - name: Run unit tests
+      - name: Run Unit Tests
         run: pytest -v tests_unit/
+      - name: Run Integration Tests
+        run: pytest -v tests_integration/
+      - name: Run System Tests
+        run: pytest -v tests_system/
+      - name: Run End-to-End Tests
+        run: pytest -v tests_e2e/
