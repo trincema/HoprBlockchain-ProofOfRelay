@@ -16,6 +16,14 @@ jobs:
         python-version: ["3.11"]
 
     steps:
+      - uses: actions/checkout@master # THIS IS IMPORTANT
+      - uses: actions/setup-python@v3 # THIS IS IMPORTANT
+        with:
+          python-version: '3.8'
+      - name: Test
+        uses: onichandame/python-test-action@master
+        with:
+          deps_list: 'requirement'
       - name: Install dependencies
         run: |
           pip install --upgrade pip
