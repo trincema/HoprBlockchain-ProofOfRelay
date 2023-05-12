@@ -29,7 +29,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
           docker run --rm -d --network host --name pluto_cluster gcr.io/hoprassociation/hopr-pluto:1.92.7
-          ./wait-for host:13305 -t 200
+          sleep 200s
       - name: Lint with Ruff
         run: |
           ruff --format=github --target-version=py311 .
