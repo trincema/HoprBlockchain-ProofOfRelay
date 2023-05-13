@@ -16,3 +16,4 @@ for nodeIndex in range(1, 6):
             break
         else:
             time.sleep(5)
+        response.close()
