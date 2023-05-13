@@ -1,4 +1,6 @@
-StrEnum
+ruff
 pytest
 requests
-websocket
+websockets
+websocket-client
+StrEnum
