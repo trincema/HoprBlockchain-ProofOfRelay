@@ -30,7 +30,8 @@ class Messages(RootApi):
             body['hops'] = hops
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.post_request(url, body)
-        assert response.status_code == 202
+        if response.status_code != 200 or response.status_code != 202:
+            self.handle_http_error(response)
     
     def check_node_does_not_get_message(self, nodeIndex: int, path: str, timeout: int = 5) -> None:
         """
