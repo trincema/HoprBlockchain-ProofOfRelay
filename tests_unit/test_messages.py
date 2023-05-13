@@ -2,7 +2,7 @@ import api_object_model.node as node
 import test_data.urls as urls
 import services.rest_api_service as restApiService
 from requests import Response
-import time
+import api_object_model.channels as channels
 
 def test_case1():
     """
@@ -22,6 +22,10 @@ def test_case1():
 def test_case2():
     """
     """
+    channelsInstance = channels.Channels()
+    for nodeIndex in range(1, 6):
+        channelsInstance.list_active_channels(nodeIndex)
+
     nodeInstance = node.Node()
     recipient = nodeInstance.get_peer_id(2)
     path = nodeInstance.get_peer_id(3)
