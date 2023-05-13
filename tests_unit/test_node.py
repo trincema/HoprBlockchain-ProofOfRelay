@@ -1,22 +1,24 @@
 import api_object_model.node as node
-import logging
+import re
 
-logger = logging.getLogger('test_node')
-
-def test_peer_id():
+def test_peer_id_address():
+    """
+    Validate the peer id addresses of the 5 nodes
+    Check that the address starts with 16U
+    Check that the address is always 53 characters in length
+    Check the address only contain capital/lowercase letters and numbers
+    """
     nodeInstance = node.Node()
-    peerId1 = nodeInstance.get_peer_id(1)
-    peerId2 = nodeInstance.get_peer_id(2)
-    peerId3 = nodeInstance.get_peer_id(3)
-    peerId4 = nodeInstance.get_peer_id(4)
-    peerId5 = nodeInstance.get_peer_id(5)
-    assert peerId1.startswith("16U")
-    assert peerId2.startswith("16U")
-    assert peerId3.startswith("16U")
-    assert peerId4.startswith("16U")
-    assert peerId5.startswith("16U")
+    for i in range(1, 6):
+        peerId = nodeInstance.get_peer_id(i)
+        assert peerId.startswith("16U")
+        assert len(peerId) == 53
+        assert re.match("^[A-Za-z0-9]", peerId)
+    del nodeInstance
 
 def test_last_seen():
+    """
+    """
     nodeInstance = node.Node()
     for nodeIndex in range(5, 6):
         for announcedNodeIndex in range(1, 6):
