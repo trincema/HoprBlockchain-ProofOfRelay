@@ -41,7 +41,12 @@ jobs:
           ruff --format=github --target-version=py38 .
         continue-on-error: true
       - name: Show library versions
-        run: pip show websocket-client
+        run: |
+          python3 --version
+          pytest --version
+          pip show requests
+          pip show websocket
+          pip show websocket-client
       - name: Run Unit Tests
         run: pytest -v tests_unit/
       - name: Run Integration Tests
