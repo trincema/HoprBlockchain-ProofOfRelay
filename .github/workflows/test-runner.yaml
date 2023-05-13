@@ -41,7 +41,7 @@ jobs:
           pip show websockets
           pip show websocket-client
       - name: Wait for services to be available
-        run: sleep 100s
+        run: sleep 300s
       - name: Run Unit Tests
         run: pytest -v tests_unit/
       - name: Run Integration Tests
