@@ -23,12 +23,10 @@ class Messages(RootApi):
         url = self.get_rest_url(nodeIndex, urls.Urls.MESSAGES_SEND)
         body = {
             "body": message,
-            "recipient": recipient
+            "recipient": recipient,
+            "path": path,
+            "hops": hops
         }
-        if len(path) > 0:
-            body['path'] = path
-        if hops > 0:
-            body['hops'] = hops
         print("url={}".format(url))
         print("body={}".format(json.dumps(body)))
         restService = restApiService.RestApiService(self.get_auth_token())
