@@ -10,10 +10,13 @@ for nodeIndex in range(1, 6):
     url = 'http://localhost:1330{}/api/v2/{}'.format(nodeIndex, urls.Urls.NODE_INFO)
     restService = restService.RestApiService(authToken)
     while True:
-        response: Response = restService.get_request(url)
-        if response.status_code == 200:
-            print("{} is up and running...".format(url))
-            break
-        else:
-            time.sleep(5)
-        response.close()
+        try:
+            response: Response = restService.get_request(url)
+            if response.status_code == 200:
+                print("{} is up and running...".format(url))
+                break
+            else:
+                time.sleep(5)
+            response.close()
+        except:
+            pass
