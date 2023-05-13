@@ -12,6 +12,7 @@ for nodeIndex in range(1, 6):
     while True:
         response: Response = restService.get_request(url)
         if response.status_code == 200:
+            print("{} is up and running...".format(url))
             break
         else:
             time.sleep(5)
