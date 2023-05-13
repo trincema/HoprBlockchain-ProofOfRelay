@@ -2,7 +2,9 @@ from requests import Response
 from .root_api import RootApi
 import test_data.urls as urls
 import services.rest_api_service as restApiService
-import logging
+import streamtologger
+
+streamtologger.redirect()
 
 class Node(RootApi):
     """
@@ -10,7 +12,7 @@ class Node(RootApi):
     """
 
     def __init__(self):
-        self.logger = logging.getLogger('Node')
+        pass
 
     def get_peer_id(self, nodeIndex) -> str:
         """
@@ -19,7 +21,7 @@ class Node(RootApi):
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_INFO)
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.get_request(url)
-
+        print("url: {} response: {}".format(url, response.json()))
         if response.status_code == 200:
             # Node information fetched successfuly. Process data and return desired data
             listeningAddress = response.json()["listeningAddress"][0].split('/')
