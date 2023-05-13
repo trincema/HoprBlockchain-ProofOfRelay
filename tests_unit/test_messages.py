@@ -36,7 +36,10 @@ def test_case2():
     body = {
         "body": "Hello from future",
         "recipient": recipient,
-        path: [path]
+        "path": [
+            path
+        ],
+        "hops": 2
     }
     print(body)
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
