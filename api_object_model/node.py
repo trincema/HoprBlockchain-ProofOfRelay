@@ -2,7 +2,6 @@ from requests import Response
 from .root_api import RootApi
 import test_data.urls as urls
 import services.rest_api_service as restApiService
-import logging
 
 class Node(RootApi):
     """
@@ -10,7 +9,7 @@ class Node(RootApi):
     """
 
     def __init__(self):
-        self.logger = logging.getLogger('Node')
+        pass
 
     def get_peer_id(self, nodeIndex) -> str:
         """
