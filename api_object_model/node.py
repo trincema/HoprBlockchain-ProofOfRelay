@@ -2,6 +2,8 @@ from requests import Response
 from .root_api import RootApi
 import test_data.urls as urls
 import services.rest_api_service as restApiService
+import logging
+logging.basicConfig(filename='node.log', encoding='utf-8', level=logging.DEBUG)
 
 class Node(RootApi):
     """
@@ -18,7 +20,7 @@ class Node(RootApi):
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_INFO)
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.get_request(url)
-
+        logging.debug("url: {} response: {}".format(url, response.json()))
         if response.status_code == 200:
             # Node information fetched successfuly. Process data and return desired data
             listeningAddress = response.json()["listeningAddress"][0].split('/')
