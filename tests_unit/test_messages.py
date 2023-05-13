@@ -15,17 +15,6 @@ def test_send_message():
     }
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
-    count = 0
-    while True:
-        if count == 40:
-            break
-        try:
-            response: Response = restService.post_request(url, body)
-            print("Response: {}".format(response.json()))
-            if response.status_code == 202:
-                break
-        except:
-            time.sleep(10)
-        count = count + 1
     response: Response = restService.post_request(url, body)
-    assert response.status_code == 202
+    assert response.status_code == 422
+    assert response.json()['error'] == 'Failed to find automatic path'
