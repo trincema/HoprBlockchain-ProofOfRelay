@@ -33,5 +33,6 @@ def test_case2():
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
+    print("Error: {}".format(response.json()['error']))
     assert response.status_code == 202
     # assert response.json()['error'] == 'Failed to find automatic path'
