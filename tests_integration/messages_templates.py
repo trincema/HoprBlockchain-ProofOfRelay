@@ -33,6 +33,8 @@ class MessagesTemplates:
         peerIdPath = []
         for nodeId in path:
             peerIdPath.append(nodeInstance.get_peer_id(nodeId))
+        print("senderNode = {}, testMessage = {}, rexipient = {}, path = {}, hops = {}".format(
+            senderNode, testMessage, nodeInstance.get_peer_id(receiverNode), peerIdPath, hops))
         messagesInstance.send_message(senderNode, testMessage, nodeInstance.get_peer_id(receiverNode), peerIdPath, hops)
 
         # Step2: Check that the message is received by receiverNode
