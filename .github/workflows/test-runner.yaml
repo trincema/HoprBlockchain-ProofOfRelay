@@ -45,7 +45,7 @@ jobs:
           python3 --version
           pytest --version
           pip show requests
-          pip show websocket
+          pip show websockets
           pip show websocket-client
       - name: Run Unit Tests
         run: pytest -v tests_unit/

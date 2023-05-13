@@ -1,6 +1,6 @@
 ruff
 pytest
 requests
-websocket
-websocket-client==0.44.0
+websockets
+websocket-client
 StrEnum
