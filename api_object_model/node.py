@@ -3,6 +3,8 @@ from .root_api import RootApi
 import test_data.urls as urls
 import services.rest_api_service as restApiService
 import logging
+import sys
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 # logging.basicConfig(filename='node.log', encoding='utf-8', level=logging.DEBUG)
 
 class Node(RootApi):
@@ -20,7 +22,7 @@ class Node(RootApi):
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_INFO)
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.get_request(url)
-        print("url: {} response: {}".format(url, response.json()))
+        logging.warn("url: {} response: {}".format(url, response.json()))
         # logging.debug("url: {} response: {}".format(url, response.json()))
         if response.status_code == 200:
             # Node information fetched successfuly. Process data and return desired data
