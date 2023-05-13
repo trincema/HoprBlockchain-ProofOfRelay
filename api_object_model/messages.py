@@ -4,6 +4,7 @@ import services.rest_api_service as restApiService
 import services.ws_api_service as wsApiService
 from requests import Response
 from websocket import WebSocketTimeoutException
+import json
 
 class Messages(RootApi):
     """
@@ -28,7 +29,7 @@ class Messages(RootApi):
             body['path'] = path
         if hops > 0:
             body['hops'] = hops
-        print("body=".format(body))
+        print("body=".format(json.dumps(body)))
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.post_request(url, body)
         print("Response: {}".format(response.json()))
