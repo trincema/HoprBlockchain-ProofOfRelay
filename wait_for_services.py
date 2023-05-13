@@ -20,4 +20,3 @@ for nodeIndex in range(1, 6):
             response.close()
         except:
             pass
-time.sleep(120)

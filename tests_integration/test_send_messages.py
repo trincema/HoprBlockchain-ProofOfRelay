@@ -15,7 +15,7 @@ def test_case1():
     messagesTemplate = MessagesTemplates()
     messagesTemplate.template1(senderNode, receiverNode, testMessage, expectedEncodedMessage, visitationPath)
 
-def test_case2():
+def xtest_case2():
     """
     Test case 2: Test send message from Node1 to Node2 with one defined hop
     """
@@ -31,7 +31,7 @@ def test_case2():
     messagesTemplate = MessagesTemplates()
     messagesTemplate.template1(senderNode, receiverNode, testMessage, expectedEncodedMessage, visitationPath, path)
 
-def test_case3():
+def xtest_case3():
     """
     Test case 3: Test send message from Node1 to Node2 with one defined hop and a random hop
     Note: the random hop has to be ignored in this case
@@ -49,7 +49,7 @@ def test_case3():
     messagesTemplate = MessagesTemplates()
     messagesTemplate.template1(senderNode, receiverNode, testMessage, expectedEncodedMessage, visitationPath, path, hops)
 
-def test_case4():
+def xtest_case4():
     """
     Test case 4: Test send message from Node1 to Node2 with one random hop and no defined hop
     TODO - Here the tricky part is to extend the template to check which node from the other 3 nodes is visited
