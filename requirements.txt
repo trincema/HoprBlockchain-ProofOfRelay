@@ -4,3 +4,4 @@ requests
 websockets
 websocket-client
 StrEnum
+streamtologger
