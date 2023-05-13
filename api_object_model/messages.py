@@ -28,8 +28,10 @@ class Messages(RootApi):
             body['path'] = path
         if hops > 0:
             body['hops'] = hops
+        print("body=".format(body))
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.post_request(url, body)
+        print("Response: {}".format(response.json()))
         if response.status_code != 200 or response.status_code != 202:
             self.handle_http_error(response)
     
