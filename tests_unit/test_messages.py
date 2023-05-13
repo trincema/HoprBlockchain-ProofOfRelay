@@ -22,6 +22,10 @@ def test_case1():
 def test_case2():
     """
     """
+    nodeInstance = node.Node()
+    for i in range(1, 6):
+        peerId = nodeInstance.get_peer_id(i)
+        print("node{}: {}".format(i, peerId))
     channelsInstance = channels.Channels()
     for nodeIndex in range(1, 6):
         channelsInstance.list_active_channels(nodeIndex)
@@ -34,6 +38,7 @@ def test_case2():
         "recipient": recipient,
         path: [path]
     }
+    print(body)
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
