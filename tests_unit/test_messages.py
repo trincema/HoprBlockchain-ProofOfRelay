@@ -3,6 +3,7 @@ import test_data.urls as urls
 import services.rest_api_service as restApiService
 from requests import Response
 import api_object_model.channels as channels
+import api_object_model.root_api as rootApi
 
 def test_case1():
     """
@@ -30,7 +31,6 @@ def test_case2():
     for nodeIndex in range(1, 6):
         channelsInstance.list_active_channels(nodeIndex)
 
-    nodeInstance = node.Node()
     recipient = nodeInstance.get_peer_id(2)
     path = nodeInstance.get_peer_id(3)
     body = {
@@ -45,6 +45,6 @@ def test_case2():
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
-    print("Error: {}".format(response.json()['error']))
-    assert response.status_code == 202
-    # assert response.json()['error'] == 'Failed to find automatic path'
+    if response.status_code != 202:
+        root = rootApi.RootApi()
+        root.handle_http_error(response)
