@@ -80,8 +80,7 @@ def check_visitation_path(input: Input, output: Output):
     currentEpochTime: int = int(time.time())
     for pair in output.visitationPath:
         lastSeenPair = nodeInstance.get_announced_last_seen(pair[0], nodeInstance.get_peer_id(pair[1]))
-        a = int(lastSeenPair/1000)
-        lastSeenPairDelta: int = currentEpochTime - a
+        lastSeenPairDelta: int = currentEpochTime - int(lastSeenPair/1000)
         print("lastSeenPair = {}, epochTime = {}, lastSeenPairDelta = {}, a={}".format(lastSeenPair, currentEpochTime, lastSeenPairDelta, a))
         assert lastSeenPairDelta < 60     # Check that it was last visited in the last minute
     # Or another alternative here would be to check the last seen diference before calling the /message API

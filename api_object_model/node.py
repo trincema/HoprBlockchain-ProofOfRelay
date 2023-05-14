@@ -3,6 +3,7 @@ from .root_api import RootApi
 import test_data.urls as urls
 import services.rest_api_service as restApiService
 import streamtologger
+import json
 
 streamtologger.redirect()
 
@@ -40,6 +41,7 @@ class Node(RootApi):
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_PEER_LIST)
         restService = restApiService.RestApiService(self.get_auth_token())
         response = restService.get_request(url)
+        print("Response: {}".format(json.dumps(response.json())))
 
         if response.status_code == 200:
             lastSeenList = response.json()["announced"]
