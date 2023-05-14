@@ -1,5 +1,6 @@
 import pytest
 import time
+import json
 from typing import List
 import api_object_model.node as node
 import api_object_model.account as account
@@ -33,6 +34,7 @@ def test_case1(input: Input, output: Output):
     :receivedMessage: Expected received message by 'receiver', encoded as Uint8Array of numbers
     :visitationPath: Array of node indexes representing the path the message should take from 'sender' to 'receiver'
     """
+    print(json.dumps(input))
     # Instantiate needed objects
     nodeInstance = node.Node()
     accountInstance = account.Account()
