@@ -24,8 +24,7 @@ class Messages(RootApi):
         body = {
             "body": message,
             "recipient": recipient,
-            "path": path,
-            "hops": hops
+            "path": path
         }
         print("url={}".format(url))
         print("body={}".format(json.dumps(body)))
