@@ -17,6 +17,7 @@ def xtest_case1():
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
     assert response.status_code == 422
     assert response.json()['error'] == 'Failed to find automatic path'
 
@@ -33,6 +34,7 @@ def test_case2():
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
     assert response.status_code == 422
     assert response.json()['error'] == 'Failed to find automatic path'
 
@@ -49,6 +51,7 @@ def xtest_case3():
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
     assert response.status_code == 422
     assert response.json()['error'] == 'Failed to find automatic path'
 
@@ -77,6 +80,7 @@ def xtest_case4():
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
     if response.status_code != 202:
         root = rootApi.RootApi()
         root.handle_http_error(response)
