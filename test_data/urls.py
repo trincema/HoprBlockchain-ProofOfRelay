@@ -20,7 +20,7 @@ class Urls(StrEnum):
 
     MESSAGES_INCOMING_MESSAGEs = 'messages/websocket',
     MESSAGES_SIGN = 'messages/sign',
-    MESSAGES_SEND = 'messages/',
+    MESSAGES_SEND = 'messages',
 
     NODE_VERSION = 'node/version',
     NODE_PING = 'nodeping',
