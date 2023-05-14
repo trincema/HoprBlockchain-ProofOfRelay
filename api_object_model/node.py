@@ -47,6 +47,7 @@ class Node(RootApi):
             lastSeenList = response.json()["announced"]
             for lastSeen in lastSeenList:
                 if lastSeen['peerId'] == peerId:
+                    print("found: {}".format(int(lastSeen['lastSeen'])))
                     return int(lastSeen['lastSeen'])
         else:
             # Handle errors according to the Swagger API specs
