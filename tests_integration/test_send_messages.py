@@ -21,10 +21,16 @@ class Output:
         self.visitationPath = visitationPath
 
 
-@pytest.mark.parametrize("input, output",[(
+@pytest.mark.parametrize("input, output",[
+    (
         Input(sender = 1, receiver = 2, message = "Hello from future", path = [3], hops = 0),
         Output(receivedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", visitationPath = [[1, 3], [3, 2]])
-        )])
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = "Hello from future", path = [3], hops = 1),
+        Output(receivedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", visitationPath = [[1, 3], [3, 2]])
+    )
+    ])
 def test_case1(input: Input, output: Output):
     """
     :sender: The index of the sender node (like '1' for node1)
@@ -54,15 +60,7 @@ def test_case1(input: Input, output: Output):
     message2: str = webSocket.receive_message()
     assert output.receivedMessage in message2
 
-    # Step3: Check the visitation path
-    currentEpochTime = int(time.time())
-    for pair in output.visitationPath:
-        lastSeenPair = nodeInstance.get_announced_last_seen(pair[0], nodeInstance.get_peer_id(pair[1]))
-        lastSeenPairDelta = (currentEpochTime - lastSeenPair/1000)
-        print("lastSeenPair = {}, epochTime = {}, lastSeenPairDelta = {}".format(lastSeenPair, currentEpochTime, lastSeenPairDelta))
-        assert lastSeenPairDelta < 60     # Check that it was last visited in the last minute
-    # Or another alternative here would be to check the last seen diference before calling the /message API
-    # TODO have to make some improvements to this check
+    check_visitation_path(input, output)
 
     # Step4: Check that the message is not received by other nodes
     for otherReceiverNode in range(1, 6):
@@ -74,19 +72,19 @@ def test_case1(input: Input, output: Output):
 
     webSocket.close_client_connection()
 
-def xtest_case3():
+def check_visitation_path(input: Input, output: Output):
     """
-    Test case 3: Test send message from Node1 to Node2 with one defined hop and a random hop
-    Note: the random hop has to be ignored in this case
+    Check the visitation path
     """
-    # Define test data for this scenario
-    senderNode = 1
-    receiverNode = 2
-    testMessage = "Hello from future"
-    expectedEncodedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117"
-    visitationPath = [[1, 3], [3, 2]]
-    path = [3]
-    hops = 1
+    nodeInstance = node.Node()
+    currentEpochTime: int = int(time.time())
+    for pair in output.visitationPath:
+        lastSeenPair = nodeInstance.get_announced_last_seen(pair[0], nodeInstance.get_peer_id(pair[1]))
+        lastSeenPairDelta: int = (currentEpochTime - int(lastSeenPair/1000))
+        print("lastSeenPair = {}, epochTime = {}, lastSeenPairDelta = {}".format(lastSeenPair, currentEpochTime, lastSeenPairDelta))
+        assert lastSeenPairDelta < 60     # Check that it was last visited in the last minute
+    # Or another alternative here would be to check the last seen diference before calling the /message API
+    # TODO have to make some improvements to this check
 
 def xtest_case4():
     """
