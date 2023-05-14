@@ -34,7 +34,9 @@ class Node(RootApi):
     
     def get_announced_last_seen(self, nodeIndex, peerId) -> int:
         """
-        Get the last time the node was visited
+        Get the last time the node that was visited by the hop
+        It seems in the CI there takes some time until the node is marked as visited by the hop,
+        so a waiting mechanism is impplemented to retry the API call until we have the node visited by the hop.
         :nodeIndex: The index of the node to check the last seen attribute
         :peerId: The peer that announced itself to the node
         """
