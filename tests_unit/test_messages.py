@@ -65,11 +65,32 @@ def test_case2():
     """
     nodeInstance = node.Node()
     recipient = nodeInstance.get_peer_id(2)
-    path = nodeInstance.get_peer_id(3)
     body = {
         "body": "Hello from future",
         "recipient": recipient,
         "path": [],
+        "hops": 1
+    }
+    print(body)
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
+    response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
+    if response.status_code != 202:
+        root = rootApi.RootApi()
+        root.handle_http_error(response)
+    
+def test_case3():
+    """
+    /messages/ Should return 202 if 'hops' parameter is set with a valid value. 'path' can be missing
+    The message should be sent successfully. NOTE: This does not imply successful delivery.
+    """
+    nodeInstance = node.Node()
+    recipient = nodeInstance.get_peer_id(2)
+    path = nodeInstance.get_peer_id(3)
+    body = {
+        "body": "Hello from future",
+        "recipient": recipient,
         "hops": 1
     }
     print(body)
