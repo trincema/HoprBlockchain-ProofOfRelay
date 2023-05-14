@@ -19,10 +19,10 @@ class Output:
     visitationPath: List[int]
 
 
-@pytest.mark.parametrize("input, output",
-    {1, 2, "Hello from future", [3], 0},
-    {"217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", [1, 3, 2]}
-    )
+@pytest.mark.parametrize("input, output",[
+    ({1, 2, "Hello from future", [3], 0},
+    {"217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", [1, 3, 2]})
+    ])
 def test_case1(input: Input, output: Output):
     """
     :sender: The index of the sender node (like '1' for node1)
