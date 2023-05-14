@@ -2,21 +2,6 @@ from .messages_templates import MessagesTemplates
 
 def test_case1():
     """
-    Test case 1: Test send message directly from Node1 to Node2 (no hops)
-    """
-    # Define test data for this scenario
-    senderNode = 1
-    receiverNode = 2
-    testMessage = "Hello from future"
-    expectedEncodedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117"
-    visitationPath = [[1, 2]]
-
-    # Call the common template and feed it with the prepared test data
-    messagesTemplate = MessagesTemplates()
-    messagesTemplate.template1(senderNode, receiverNode, testMessage, expectedEncodedMessage, visitationPath)
-
-def xtest_case2():
-    """
     Test case 2: Test send message from Node1 to Node2 with one defined hop
     """
     # Define test data for this scenario

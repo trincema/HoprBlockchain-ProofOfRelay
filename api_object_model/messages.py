@@ -37,7 +37,7 @@ class Messages(RootApi):
     
     def check_node_does_not_get_message(self, nodeIndex: int, path: str, timeout: int = 5) -> None:
         """
-        Checking that a certain node does not get the message.
+        Checking that a certain node does not get the message in a specified timeout.
         """
         wsUrl = self.get_ws_url(nodeIndex, path)
         webSocket = wsApiService.WebsocketClientService()
