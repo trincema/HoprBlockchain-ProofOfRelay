@@ -11,12 +11,12 @@ class Input:
     sender: int
     receiver: int
     message: str
-    path: List[int]
+    path = []
     hops: int
 
 class Output:
     receivedMessage: str
-    visitationPath: List[int]
+    visitationPath = []
 
 
 @pytest.mark.parametrize("input, output",[
