@@ -1,6 +1,5 @@
 import pytest
 import time
-import json
 from typing import List
 import api_object_model.node as node
 import api_object_model.account as account
@@ -9,21 +8,23 @@ import services.ws_api_service as wsApiService
 import test_data.urls as urls
 
 class Input:
-    sender: int
-    receiver: int
-    message: str
-    path: List[int]
-    hops: int
+    def __init__(self, sender: int, receiver: int, message: str, path: List[int], hops: int) -> None:
+        self.sender = sender
+        self.receiver = receiver
+        self.message = message
+        self.path = path
+        self.hops = hops
 
 class Output:
-    receivedMessage: str
-    visitationPath: List[int]
+    def __init__(self, receivedMessage: str, visitationPath: List[List[int]]) -> None:
+        self.receivedMessage = receivedMessage
+        self.visitationPath = visitationPath
 
 
-@pytest.mark.parametrize("input, output",[
-    ({"sender": 1, "receiver": 2, "message": "Hello from future", "path": [3], "hops": 0},
-    {"receivedMessage": "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", "visitationPath": [1, 3, 2]})
-    ])
+@pytest.mark.parametrize("input, output",[(
+        Input(sender = 1, receiver = 2, message = "Hello from future", path = [3], hops = 0),
+        Output(receivedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", visitationPath = [[1, 3], [3, 2]])
+        )])
 def test_case1(input: Input, output: Output):
     """
     :sender: The index of the sender node (like '1' for node1)
@@ -34,7 +35,6 @@ def test_case1(input: Input, output: Output):
     :receivedMessage: Expected received message by 'receiver', encoded as Uint8Array of numbers
     :visitationPath: Array of node indexes representing the path the message should take from 'sender' to 'receiver'
     """
-    print(json.dumps(input))
     # Instantiate needed objects
     nodeInstance = node.Node()
     accountInstance = account.Account()
