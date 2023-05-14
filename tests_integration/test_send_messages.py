@@ -11,17 +11,17 @@ class Input:
     sender: int
     receiver: int
     message: str
-    path = []
+    path: List[int]
     hops: int
 
 class Output:
     receivedMessage: str
-    visitationPath = []
+    visitationPath: List[int]
 
 
 @pytest.mark.parametrize("input, output",[
-    ({1, 2, "Hello from future", [3], 0},
-     {"217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", [1, 3, 2]})
+    {1, 2, "Hello from future", [3], 0},
+    {"217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", [1, 3, 2]}
     ])
 def test_case1(input: Input, output: Output):
     """
