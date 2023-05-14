@@ -43,9 +43,10 @@ def test_case1():
         ],
         "hops": 1
     }
+    expectedResponseCode = 202
     print("url: {} body: {}".format(url, body))
 
-    template1(url, body)
+    template1(url, body, expectedResponseCode)
 
 def test_case2():
     """
@@ -61,9 +62,10 @@ def test_case2():
         "path": [],
         "hops": 1
     }
+    expectedResponseCode = 202
     print("url: {} body: {}".format(url, body))
-    
-    template1(url, body)
+
+    template1(url, body, expectedResponseCode)
 
 def test_case3():
     """
@@ -78,13 +80,68 @@ def test_case3():
         "recipient": recipient,
         "hops": 1
     }
+    expectedResponseCode = 202
     print("url: {} body: {}".format(url, body))
 
-    template1(url, body)
+    template1(url, body, expectedResponseCode)
 
+def test_case4():
+    """
+    /messages/ Should return 202 if hops parameter is missing.
+    The message should be sent successfully. NOTE: This does not imply successful delivery.
+    """
+    nodeInstance = node.Node()
+    recipient = nodeInstance.get_peer_id(2)
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+    body = {
+        "body": "Hello from future",
+        "recipient": recipient,
+        "path": []
+    }
+    expectedResponseCode = 202
+    print("url: {} body: {}".format(url, body))
 
+    template1(url, body, expectedResponseCode)
 
-def template1(url, body):
+def test_case5():
+    """
+    Should return 422 if path and hops parameters are missing.
+    The message should not be sent at this point.
+    """
+    nodeInstance = node.Node()
+    recipient = nodeInstance.get_peer_id(2)
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+    body = {
+        "body": "Hello from future",
+        "recipient": recipient
+    }
+    
+    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
+    response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
+    assert response.status_code == 422
+    assert response.json()['error'] == 'Failed to find automatic path'
+
+def test_case6():
+    """
+    /messages/ Should return 400 if path is missing.
+    The message should not be sent in this case.
+    """
+    nodeInstance = node.Node()
+    recipient = nodeInstance.get_peer_id(2)
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+    body = {
+        "body": "Hello from future",
+        "recipient": recipient,
+        "hops": 0
+    }
+    
+    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
+    response: Response = restService.post_request(url, body)
+    print("Response: {} status: {}".format(response.json(), response.status_code))
+    assert response.status_code == 400
+
+def template1(url: str, body, expectedResponseCode: int) -> None:
     """
     Template used by the test cases where the message should be sent successfully and the status code should be 202
     """
@@ -95,6 +152,7 @@ def template1(url, body):
     print("Response: {} status: {}".format(response.json(), response.status_code))
     if response.status_code != 202:
         root.handle_http_error(response)
+    assert response.status_code == expectedResponseCode
 
 def debug_nodes():
     """
@@ -107,57 +165,3 @@ def debug_nodes():
     channelsInstance = channels.Channels()
     for nodeIndex in range(1, 6):
         channelsInstance.list_active_channels(nodeIndex)
-
-def xtest_case1():
-    """
-    Should return 422 if path and hops parameters are missing.
-    The message should not be sent at this point.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient
-    }
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
-    response: Response = restService.post_request(url, body)
-    print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 422
-    assert response.json()['error'] == 'Failed to find automatic path'
-
-def xtest_case2():
-    """
-    /messages/ Should return 202 if hops parameter is missing.
-    The message should be sent successfully. NOTE: This does not imply successful delivery.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "path": []
-    }
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
-    response: Response = restService.post_request(url, body)
-    print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 202
-
-def xtest_case3():
-    """
-    /messages/ Should return 400 if path is missing.
-    The message should not be sent in this case.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "hops": 0
-    }
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
-    response: Response = restService.post_request(url, body)
-    print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 400
