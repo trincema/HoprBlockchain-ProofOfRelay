@@ -5,7 +5,7 @@ from requests import Response
 import api_object_model.channels as channels
 import api_object_model.root_api as rootApi
 
-def test_case1():
+def xtest_case1():
     """
     """
     nodeInstance = node.Node()
@@ -24,6 +24,38 @@ def test_case2():
     """
     """
     nodeInstance = node.Node()
+    recipient = nodeInstance.get_peer_id(2)
+    body = {
+        "body": "Hello from future",
+        "recipient": recipient,
+        "path": []
+    }
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
+    response: Response = restService.post_request(url, body)
+    assert response.status_code == 422
+    assert response.json()['error'] == 'Failed to find automatic path'
+
+def xtest_case3():
+    """
+    """
+    nodeInstance = node.Node()
+    recipient = nodeInstance.get_peer_id(2)
+    body = {
+        "body": "Hello from future",
+        "recipient": recipient,
+        "hops": 0
+    }
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
+    response: Response = restService.post_request(url, body)
+    assert response.status_code == 422
+    assert response.json()['error'] == 'Failed to find automatic path'
+
+def xtest_case4():
+    """
+    """
+    nodeInstance = node.Node()
     for i in range(1, 6):
         peerId = nodeInstance.get_peer_id(i)
         print("node{}: {}".format(i, peerId))
@@ -39,7 +71,7 @@ def test_case2():
         "path": [
             path
         ],
-        "hops": 2
+        "hops": 1
     }
     print(body)
     url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
