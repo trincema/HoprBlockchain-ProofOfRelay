@@ -12,7 +12,7 @@ class Urls(StrEnum):
 
     CHANNELS_FUND_PAYMENT_CHANNEL = 'fundmulti',
     CHANNELS_OPEN_PAYMENT_CHANNEL = 'channels',
-    CHANNELS_ACTIVE_CHANNEL_LIST = 'channels',
+    CHANNELS_ACTIVE_CHANNEL_LIST = 'channels/',
     CHANNELS_REDEEM_TICKETS = 'channels/{peerId}/tickets/redeem',
     CHANNELS_TICKETS_LIST = 'channels/{peerId}/tickets',
     CHANNELS_CLOSE_OPENED_CHANNEL = 'channels/{peerId}/{direction}',

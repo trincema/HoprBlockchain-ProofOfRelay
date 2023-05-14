@@ -15,6 +15,7 @@ class WebsocketClientService(rootApi.RootApi):
         Open a new websocket client connection to the given URL
         """
         wsUrl = self.get_ws_url(nodeIndex, path)
+        print("wsUrl = {}".format(wsUrl))
         self.webSocket = create_connection(wsUrl, timeout)
     
     def receive_message(self):

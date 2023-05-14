@@ -9,7 +9,8 @@ class RestApiService:
     def __init__(self, authToken) -> None:
         self.authToken = authToken
         self.headers = {
-            "X-Auth-Token": self.authToken
+            "X-Auth-Token": self.authToken,
+            'Connection': 'close'
         }
     
     def set_headers(self, headers) -> None:

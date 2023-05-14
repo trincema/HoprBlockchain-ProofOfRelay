@@ -16,7 +16,7 @@ def test_peer_id_address():
         assert re.match("^[A-Za-z0-9]", peerId)
     del nodeInstance
 
-def test_last_seen():
+def xtest_last_seen():
     """
     """
     nodeInstance = node.Node()

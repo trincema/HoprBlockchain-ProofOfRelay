@@ -29,13 +29,6 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
           docker run --rm -d --network host --name pluto_cluster gcr.io/hoprassociation/hopr-pluto:1.92.7
-      # Waiting until all the services are up (waiting for 5th node 200 response)
-      - uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:13305/api/v2/_swagger'
-          responseCode: 200
-          timeout: 200000
-          interval: 500
       - name: Lint with Ruff
         run: |
           ruff --format=github --target-version=py38 .
@@ -48,7 +41,7 @@ jobs:
           pip show websockets
           pip show websocket-client
       - name: Wait for services to be available
-        run: sleep 100s
+        run: python3 wait_for_services.py
       - name: Run Unit Tests
         run: pytest -v tests_unit/
       - name: Run Integration Tests
