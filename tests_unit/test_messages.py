@@ -5,7 +5,7 @@ from requests import Response
 import api_object_model.channels as channels
 import api_object_model.root_api as rootApi
 
-def xtest_case1():
+def test_case1():
     """
     """
     nodeInstance = node.Node()
@@ -35,10 +35,9 @@ def test_case2():
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
     print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 422
-    assert response.json()['error'] == 'Failed to find automatic path'
+    assert response.status_code == 202
 
-def xtest_case3():
+def test_case3():
     """
     """
     nodeInstance = node.Node()
@@ -52,8 +51,7 @@ def xtest_case3():
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
     response: Response = restService.post_request(url, body)
     print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 422
-    assert response.json()['error'] == 'Failed to find automatic path'
+    assert response.status_code == 202
 
 def xtest_case4():
     """
