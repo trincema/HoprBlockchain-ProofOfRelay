@@ -36,6 +36,7 @@ class Node(RootApi):
         :nodeIndex: The index of the node to check the last seen attribute
         :peerId: The peer that announced itself to the node
         """
+        print("get_announced_last_seen({}, {})".format(nodeIndex, peerId))
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_PEER_LIST)
         restService = restApiService.RestApiService(self.get_auth_token())
         response = restService.get_request(url)
