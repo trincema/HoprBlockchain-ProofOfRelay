@@ -41,7 +41,7 @@ class Node(RootApi):
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_PEER_LIST)
         restService = restApiService.RestApiService(self.get_auth_token())
         response = restService.get_request(url)
-        print("Response: {}".format(json.dumps(response.json())))
+        print("Response: {} response_code: {}".format(json.dumps(response.json()), response.status_code))
 
         if response.status_code == 200:
             lastSeenList = response.json()["announced"]
