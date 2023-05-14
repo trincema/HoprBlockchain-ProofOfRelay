@@ -4,6 +4,7 @@ import test_data.urls as urls
 import services.rest_api_service as restApiService
 import streamtologger
 import json
+import time
 
 streamtologger.redirect()
 
@@ -40,18 +41,23 @@ class Node(RootApi):
         print("get_announced_last_seen({}, {})".format(nodeIndex, peerId))
         url = self.get_rest_url(nodeIndex, urls.Urls.NODE_PEER_LIST)
         restService = restApiService.RestApiService(self.get_auth_token())
-        response = restService.get_request(url)
-        print("Response: {} response_code: {}".format(json.dumps(response.json()), response.status_code))
 
-        if response.status_code == 200:
-            lastSeenList = response.json()["announced"]
-            for lastSeen in lastSeenList:
-                if lastSeen['peerId'] == peerId:
-                    print("found: {}".format(int(lastSeen['lastSeen'])))
-                    return int(lastSeen['lastSeen'])
-        else:
-            # Handle errors according to the Swagger API specs
-            self.handle_http_error(response)
+        while True:
+            response = restService.get_request(url)
+            print("Response: {} response_code: {}".format(json.dumps(response.json()), response.status_code))
+            found = False
+            if response.status_code == 200:
+                lastSeenList = response.json()["announced"]
+                for lastSeen in lastSeenList:
+                    if lastSeen['peerId'] == peerId:
+                        found = True
+                        return int(lastSeen['lastSeen'])
+            else:
+                # Handle errors according to the Swagger API specs
+                self.handle_http_error(response)
+            if found == True:
+                break
+            time.sleep(5)
         return 0
     
     def not_visited_lately(self, nodeIndex):
