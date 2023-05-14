@@ -56,7 +56,7 @@ def test_case1(input: Input, output: Output):
         input.sender, input.message, nodeInstance.get_peer_id(input.receiver), peerIdPath, input.hops))
     messagesInstance.send_message(input.sender, input.message, nodeInstance.get_peer_id(input.receiver), peerIdPath, input.hops)
 
-    # Step2: Check that the message is received by receiverNode
+    # Step2: Check that the message is received by receiver node
     message2: str = webSocket.receive_message()
     assert output.receivedMessage in message2
 
@@ -80,8 +80,9 @@ def check_visitation_path(input: Input, output: Output):
     currentEpochTime: int = int(time.time())
     for pair in output.visitationPath:
         lastSeenPair = nodeInstance.get_announced_last_seen(pair[0], nodeInstance.get_peer_id(pair[1]))
-        lastSeenPairDelta: int = (currentEpochTime - int(lastSeenPair/1000))
-        print("lastSeenPair = {}, epochTime = {}, lastSeenPairDelta = {}".format(lastSeenPair, currentEpochTime, lastSeenPairDelta))
+        a = int(lastSeenPair/1000)
+        lastSeenPairDelta: int = currentEpochTime - a
+        print("lastSeenPair = {}, epochTime = {}, lastSeenPairDelta = {}, a={}".format(lastSeenPair, currentEpochTime, lastSeenPairDelta, a))
         assert lastSeenPairDelta < 60     # Check that it was last visited in the last minute
     # Or another alternative here would be to check the last seen diference before calling the /message API
     # TODO have to make some improvements to this check
