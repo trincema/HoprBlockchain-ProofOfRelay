@@ -72,6 +72,7 @@ def test_case3():
     """
     nodeInstance = node.Node()
     recipient = nodeInstance.get_peer_id(2)
+    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
     body = {
         "body": "Hello from future",
         "recipient": recipient,
@@ -80,7 +81,8 @@ def test_case3():
     print("url: {} body: {}".format(url, body))
 
     template1(url, body)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
+
+
 
 def template1(url, body):
     """
