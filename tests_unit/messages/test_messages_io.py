@@ -76,18 +76,36 @@ class Output:
         # Output(expectedStatusCode = 422, expectedStatus = 'UNKNOWN_FAILURE', expectedErrorMessage = 'Error while creating packet')
         Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
     ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 1),
+        # Output(expectedStatusCode = 422, expectedStatus = 'UNKNOWN_FAILURE', expectedErrorMessage = 'Error while creating packet')
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
+    ),
     # Here we have 400 error probably because if we have an empty path, 'hops' param will be taken into account if set,
     # and since 'hops' is 0, we have the 4xx error, because 'hops' must be between 1 and 3.
     (
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = 0),
         Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
     ),
-    # Why is this not working? According to Swagger documentation, path and hops should be optional parameters, and 'hops' is
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = 1),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    # 1st success run: 202
+    # 2nd run: 422 UNKNOWN_FAILURE 'Error while creating packet.'
+    # According to Swagger documentation, path and hops should be optional parameters, and 'hops' is
     # anyway ignored if a 'path' is given.
     (
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = None),
-        Output(expectedStatusCode = 422, expectedStatus = 'UNKNOWN_FAILURE', expectedErrorMessage = 'Error while creating packet.')
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+        # Output(expectedStatusCode = 422, expectedStatus = 'UNKNOWN_FAILURE', expectedErrorMessage = 'Error while creating packet.')
     ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = 0),
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
+    ),
+    # 1st run: 202
+    # 2nd run: 422 UNKNOWN_FAILURE 'Error while creating packet.'
     (
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = 1),
         Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
