@@ -28,10 +28,11 @@ class Messages(RootApi):
         }
         if path != None:
             body["path"] = path
-        if hops > 0:
+        if hops != None:
             body["hops"] = hops
         print("url={}".format(url))
         print("body={}".format(json.dumps(body)))
+        
         restService = restApiService.RestApiService(self.get_auth_token())
         response: Response = restService.post_request(url, body)
         print("Response: {} status: {}".format(response.json(), response.status_code))

@@ -29,6 +29,10 @@ class Output:
     (
         Input(sender = 1, receiver = 2, message = "Hello from future", path = [3], hops = 1),
         Output(receivedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", visitationPath = [[1, 3], [3, 2]])
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = "Hello from future", path = [3], hops = None),
+        Output(receivedMessage = "217,145,72,101,108,108,111,32,102,114,111,109,32,102,117", visitationPath = [[1, 3], [3, 2]])
     )
     ])
 def test_case1(input: Input, output: Output):
