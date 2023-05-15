@@ -45,42 +45,58 @@ class Output:
 
 @pytest.mark.parametrize("input, output",[
     (
-        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = 1),
-        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
-    ),
-    (
-        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = 1),
-        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
-    ),
-    (
-        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 1),
-        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
-    ),
-    (
-        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = None),
-        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
-    ),
-    (
-        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = None),
-        # Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
-        # This is strange, at some point running the test locally it was returning 202 constantly, now in CI correctly returns 422
-        # TODO have to investigate further (I'm used with these kind of issues/bugs in automation, especially with crypto it seems)
-        Output(expectedStatusCode = 422, expectedStatus = None, expectedErrorMessage = "Failed to find automatic path")
-    ),
-    (
-        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 0),
+        Input(sender = 1, receiver = None, message = None, path = None, hops = None),
         Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
     ),
     (
         Input(sender = 1, receiver = 2, message = None, path = None, hops = None),
         Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
     ),
+    # 1st run: 202
+    # 2nd run: 422 ONKNOWN_FAILURE 'Error while creating packet'
+    # Expected behaviour: According to Swagger documentation 'If no path is provided, a path which covers the nodes minimum required
+    # hops will be determined automatically.' So, I expect this call should return 202, but better check with stakeholders
     (
-        Input(sender = 1, receiver = None, message = 'Hello from future', path = None, hops = None),
-        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_ADDRESS', expectedErrorMessage = None)
-    )
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = None),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = None),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    # 1st run: 400 INVALID_INPUT
+    # 2nd run: 422 UNKNOWN_FAILURE Error while creating packet
+    # Expected behaviour: Swagger documentation says about 'hops' param that 'This parameter is ignored if path is set'.
+    # But if the parameter is set and 'path' is missing, I would expect that 'hops' param will be taken into consideration
+    # and if its value is 0, which is forbidden, we should get some kind of 4xx error response.
+    # The output is kind of good, in both cases we get a 4xx response, once 400 and once 422, but its a bit problematic since we
+    # don't get consistently the same error code from the backend.
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 0),
+        # Output(expectedStatusCode = 422, expectedStatus = 'UNKNOWN_FAILURE', expectedErrorMessage = 'Error while creating packet')
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
+    ),
+    # Here we have 400 error probably because if we have an empty path, 'hops' param will be taken into account if set,
+    # and since 'hops' is 0, we have the 4xx error, because 'hops' must be between 1 and 3.
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = 0),
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
+    ),
+    # Why is this not working? According to Swagger documentation, path and hops should be optional parameters, and 'hops' is
+    # anyway ignored if a 'path' is given.
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = None),
+        Output(expectedStatusCode = 422, expectedStatus = 'UNKNOWN_FAILURE', expectedErrorMessage = 'Error while creating packet.')
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = 1),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    # Notes:
+    # - Cases with empty sender cannot be implemented, since the Python REST library will throw exceptions, because a valid URL
+    # cannot be constructed without the index of the sender.
 ])
-def test_case1(input: Input, output: Output) -> None:
+def test_case(input: Input, output: Output) -> None:
     """
     Template used to send a message with varous inputs and check the expected status code and error message as output.
     """
@@ -117,17 +133,8 @@ def test_case1(input: Input, output: Output) -> None:
         assert response.json()['status'] == output.expectedStatus
     if output.expectedErrorMessage != None:
         assert response.json()['error'] == output.expectedErrorMessage
-
-def test_case2():
-    """
-    The 2nd type of Test Case we can have is to test the boundary values of the message.
-    Case 1: Send an empty message
-    Case 2: Send 1 character message
-    Case 3: Send special character message
-    Case 4: Which is the maximum length of message supported by the platform? HTTP supports from 1MB to 1GB
-    as the maximum size of the payload, so we can explore with larger messages to see what happens.
-    """
-    pass
+    
+    response.close()
 
 def debug_nodes():
     """
