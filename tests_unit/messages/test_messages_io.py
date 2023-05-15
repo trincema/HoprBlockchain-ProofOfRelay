@@ -110,6 +110,11 @@ class Output:
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = 1),
         Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
     ),
+    # Always returns 422, but shouldn't this scenario work?
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3, 4], hops = 1),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
     # Notes:
     # - Cases with empty sender cannot be implemented, since the Python REST library will throw exceptions, because a valid URL
     # cannot be constructed without the index of the sender.
