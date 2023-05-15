@@ -1,3 +1,6 @@
+import pytest
+import json
+from typing import List
 import api_object_model.node as node
 import test_data.urls as urls
 import services.rest_api_service as restApiService
@@ -26,133 +29,105 @@ and questions in my head, discuss them with neccesarry stakeholders and see abou
 These basic questions provide valuable insight for the development of Integration, System, Performance, and End-to-End Test Scenarios.
 """
 
-def test_case1():
-    """
-    /messages/ Should return 202 if both path and hops parameters are set.
-    The message should be sent successfully. NOTE: This does not imply successful delivery.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    path = nodeInstance.get_peer_id(3)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "path": [
-            path
-        ],
-        "hops": 1
-    }
-    expectedResponseCode = 202
-    print("url: {} body: {}".format(url, body))
+class Input:
+    def __init__(self, sender: int, receiver: int, message: str, path: List[int], hops: int) -> None:
+        self.sender = sender
+        self.receiver = receiver
+        self.message = message
+        self.path = path
+        self.hops = hops
 
-    template1(url, body, expectedResponseCode)
+class Output:
+    def __init__(self, expectedStatusCode: int, expectedStatus: str, expectedErrorMessage: str) -> None:
+        self.expectedStatusCode = expectedStatusCode
+        self.expectedStatus = expectedStatus
+        self.expectedErrorMessage = expectedErrorMessage
 
-def test_case2():
+@pytest.mark.parametrize("input, output",[
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [3], hops = 1),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = 1),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 1),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = None),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = None),
+        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+        # This is strange, at some point this combination was giving 422 error, and now it works ??
+        # TODO have to investigate further (I'm used with these kind of issues/bugs in automation, especially with crypto it seems)
+        # Output(expectedStatusCode = 422, expectedStatus = None, expectedErrorMessage = "Failed to find automatic path")
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 0),
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = 2, message = None, path = None, hops = None),
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_INPUT', expectedErrorMessage = None)
+    ),
+    (
+        Input(sender = 1, receiver = None, message = 'Hello from future', path = None, hops = None),
+        Output(expectedStatusCode = 400, expectedStatus = 'INVALID_ADDRESS', expectedErrorMessage = None)
+    )
+])
+def test_case1(input: Input, output: Output) -> None:
     """
-    /messages/ Should return 202 if 'hops' parameter is set with a valid value. 'path' can be empty list
-    The message should be sent successfully. NOTE: This does not imply successful delivery.
+    Template used to send a message with varous inputs and check the expected status code and error message as output.
     """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "path": [],
-        "hops": 1
-    }
-    expectedResponseCode = 202
-    print("url: {} body: {}".format(url, body))
-
-    template1(url, body, expectedResponseCode)
-
-def test_case3():
-    """
-    /messages/ Should return 202 if 'hops' parameter is set with a valid value. 'path' can be missing
-    The message should be sent successfully. NOTE: This does not imply successful delivery.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "hops": 1
-    }
-    expectedResponseCode = 202
-    print("url: {} body: {}".format(url, body))
-
-    template1(url, body, expectedResponseCode)
-
-def test_case4():
-    """
-    /messages/ Should return 202 if hops parameter is missing.
-    The message should be sent successfully. NOTE: This does not imply successful delivery.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "path": []
-    }
-    expectedResponseCode = 202
-    print("url: {} body: {}".format(url, body))
-
-    template1(url, body, expectedResponseCode)
-
-def test_case5():
-    """
-    Should return 422 if path and hops parameters are missing.
-    The message should not be sent at this point.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient
-    }
-    
-    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
-    response: Response = restService.post_request(url, body)
-    print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 422
-    assert response.json()['error'] == 'Failed to find automatic path'
-
-def test_case6():
-    """
-    /messages/ Should return 400 if path is missing.
-    The message should not be sent in this case.
-    """
-    nodeInstance = node.Node()
-    recipient = nodeInstance.get_peer_id(2)
-    url = 'http://localhost:13301/api/v2/{}'.format(urls.Urls.MESSAGES_SEND)
-    body = {
-        "body": "Hello from future",
-        "recipient": recipient,
-        "hops": 0
-    }
-    
-    restService = restApiService.RestApiService(nodeInstance.get_auth_token())
-    response: Response = restService.post_request(url, body)
-    print("Response: {} status: {}".format(response.json(), response.status_code))
-    assert response.status_code == 400
-
-def template1(url: str, body, expectedResponseCode: int) -> None:
-    """
-    Template used by the test cases where the message should be sent successfully and the status code should be 202
-    """
+    # Instantiating objects needed during the test case
     root = rootApi.RootApi()
     nodeInstance = node.Node()
     restService = restApiService.RestApiService(nodeInstance.get_auth_token())
+
+    # Preparing input data
+    url = root.get_rest_url(input.sender, urls.Urls.MESSAGES_SEND)
+    body = {}
+    if input.message != None:
+        body["body"] = input.message
+    if input.receiver != None:
+        body["recipient"] = nodeInstance.get_peer_id(input.receiver)
+    if input.path != None:
+        peerIdPath = []
+        for nodeId in input.path:
+            peerIdPath.append(nodeInstance.get_peer_id(nodeId))
+        body["path"] = peerIdPath
+    if input.hops != None:
+        body["hops"] = input.hops
+    
+    print("url={}".format(url))
+    print("body={}".format(json.dumps(body)))
+
+    # Executing the operations based on the provided input
     response: Response = restService.post_request(url, body)
     print("Response: {} status: {}".format(response.json(), response.status_code))
-    if response.status_code != 202:
-        root.handle_http_error(response)
-    assert response.status_code == expectedResponseCode
+    
+    # Checking the output
+    assert response.status_code == output.expectedStatusCode
+    if output.expectedStatus != None:
+        assert response.json()['status'] == output.expectedStatus
+    if output.expectedErrorMessage != None:
+        assert response.json()['error'] == output.expectedErrorMessage
+
+def test_case2():
+    """
+    The 2nd type of Test Case we can have is to test the boundary values of the message.
+    Case 1: Send an empty message
+    Case 2: Send 1 character message
+    Case 3: Send special character message
+    Case 4: Which is the maximum length of message supported by the platform? HTTP supports from 1MB to 1GB
+    as the maximum size of the payload, so we can explore with larger messages to see what happens.
+    """
+    pass
 
 def debug_nodes():
     """

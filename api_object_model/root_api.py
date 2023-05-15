@@ -75,9 +75,11 @@ class RootApi:
         Generic method to handle all HTTP errors.
         """
         if response.status_code == 400:
-            raise Exception('Invalid input. One of the parameters passed is in an incorrect format. status: {status} error: {error}'.format(
+            message = 'Invalid input. One of the parameters passed is in an incorrect format. status: {status}'.format(
                 status = response.json()['status']
-            ))
+            )
+            print("Error: " + message)
+            raise Exception(message)
         elif response.status_code == 401:
             raise Exception('Authentication failed. status: {status} error: {error}'.format(
                 status = response.json()['status'],
