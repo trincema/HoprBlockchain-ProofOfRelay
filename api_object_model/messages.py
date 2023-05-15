@@ -14,18 +14,20 @@ class Messages(RootApi):
     def __init__(self) -> None:
         super().__init__()
 
-    def send_message(self, nodeIndex: int, message: str, recipient: str, path, hops: int) -> None:
+    def send_message(self, nodeIndex: int, message: str, recipient: str, path, hops: int) -> int:
         """
         Send a message to another peer using a given path (list of node addresses that should relay our message through network).
         If no path is given, HOPR will attempt to find a path.
         :param nodeIndex The index of the node 
+        :return: The status code of the send message operation
         """
         url = self.get_rest_url(nodeIndex, urls.Urls.MESSAGES_SEND)
         body = {
             "body": message,
-            "recipient": recipient,
-            "path": path
+            "recipient": recipient
         }
+        if path != None:
+            body["path"] = path
         if hops > 0:
             body["hops"] = hops
         print("url={}".format(url))
@@ -35,6 +37,7 @@ class Messages(RootApi):
         print("Response: {} status: {}".format(response.json(), response.status_code))
         if response.status_code != 200 or response.status_code != 202:
             self.handle_http_error(response)
+        return response.status_code
     
     def check_node_does_not_get_message(self, nodeIndex: int, path: str, timeout: int = 5) -> None:
         """
