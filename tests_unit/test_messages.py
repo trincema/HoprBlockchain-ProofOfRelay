@@ -62,10 +62,10 @@ class Output:
     ),
     (
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = None),
-        Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
-        # This is strange, at some point this combination was giving 422 error, and now it works ??
+        # Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
+        # This is strange, at some point running the test locally it was returning 202 constantly, now in CI correctly returns 422
         # TODO have to investigate further (I'm used with these kind of issues/bugs in automation, especially with crypto it seems)
-        # Output(expectedStatusCode = 422, expectedStatus = None, expectedErrorMessage = "Failed to find automatic path")
+        Output(expectedStatusCode = 422, expectedStatus = None, expectedErrorMessage = "Failed to find automatic path")
     ),
     (
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = None, hops = 0),
