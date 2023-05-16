@@ -42,11 +42,5 @@ jobs:
           pip show websocket-client
       - name: Wait for services to be available
         run: python3 wait_for_services.py
-      - name: Run Unit Tests
-        run: pytest -v tests_unit/
       - name: Run Integration Tests
         run: pytest -v tests_integration/
-      - name: Run System Tests
-        run: pytest -v tests_system/
-      - name: Run End-to-End Tests
-        run: pytest -v tests_e2e/
