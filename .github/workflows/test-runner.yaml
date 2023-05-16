@@ -1,4 +1,4 @@
-name: HOPR Unit Tests
+name: HOPR Test Automation Solution (TAS)
 
 # Controls when the workflow will run
 on:
