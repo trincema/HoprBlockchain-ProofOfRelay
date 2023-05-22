@@ -1,11 +1,35 @@
+import pytest
 import api_object_model.account as account
+import type.balance as balance
 
-def test_balance_native():
+@pytest.mark.parametrize("nodeIndex", [
+    (1), (2), (3), (4), (5)
+])
+def test_balance(nodeIndex):
+    """
+    """
     acc = account.Account()
-    balance: int = acc.get_node_balance(1, account.Currency.NATIVE)
-    assert balance >= 0
+    balanceData: balance.Balance = acc.get_balance(nodeIndex)
+    assert balanceData.native >= 0
+    assert balanceData.hopr >= 0
 
-def test_balance_hopr():
+@pytest.mark.parametrize("nodeIndex", [
+    (1), (2), (3), (4), (5)
+])
+def test_address(nodeIndex):
+    """
+    """
     acc = account.Account()
-    balance: int = acc.get_node_balance(1, account.Currency.HOPR)
-    assert balance >= 0
+    addressNative: str = acc.get_address(nodeIndex, account.Address.NATIVE)
+    assert addressNative.startswith("0x")
+
+    addressHopr = acc.get_address(nodeIndex, account.Address.HOPR)
+    assert addressHopr.startswith("16U")
+
+def test_withdraw():
+    """
+    """
+    acc = account.Account()
+    receipt = acc.withdraw(3, account.BalanceType.NATIVE, 10000, "0x59c833145D8adf4E2aB118307062dBde2d613CDF")
+    print('Receipt: {}'.format(receipt))
+    assert receipt.startswith('0x')

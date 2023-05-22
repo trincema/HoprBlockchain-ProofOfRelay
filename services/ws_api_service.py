@@ -7,8 +7,8 @@ class WebsocketClientService(rootApi.RootApi):
     Websocket client wrapper service with the purpose to manage one websocket client connection.
     """
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, nodeIndex, path, timeout = 30) -> None:
+        self.create_client_connection(nodeIndex, path, timeout)
 
     def create_client_connection(self, nodeIndex, path, timeout = 30) -> None:
         """

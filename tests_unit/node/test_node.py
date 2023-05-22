@@ -1,7 +1,11 @@
 import api_object_model.node as node
 import re
+import pytest
 
-def test_peer_id_address():
+@pytest.mark.parametrize("nodeIndex", [
+    (1), (2), (3), (4), (5)
+])
+def test_peer_id_address(nodeIndex):
     """
     Validate the peer id addresses of the 5 nodes
     Check that the address starts with 16U
@@ -9,11 +13,10 @@ def test_peer_id_address():
     Check the address only contain capital/lowercase letters and numbers
     """
     nodeInstance = node.Node()
-    for i in range(1, 6):
-        peerId = nodeInstance.get_peer_id(i)
-        assert peerId.startswith("16U")
-        assert len(peerId) == 53
-        assert re.match("^[A-Za-z0-9]", peerId)
+    peerId = nodeInstance.get_peer_id(nodeIndex)
+    assert peerId.startswith("16U")
+    assert len(peerId) == 53
+    assert re.match("^[A-Za-z0-9]", peerId)
     del nodeInstance
 
 def xtest_last_seen():

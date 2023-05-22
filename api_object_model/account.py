@@ -3,10 +3,16 @@ from enum import Enum
 from .root_api import RootApi
 import test_data.urls as urls
 import services.rest_api_service as restApiService
+from requests import Response
+import type.balance as balance
 
-class Currency(Enum):
-    NATIVE = 'NATIVE',
-    HOPR = 'HOPR'
+class BalanceType(Enum):
+    NATIVE = 0,
+    HOPR = 1
+
+class Address(Enum):
+    NATIVE = 0,
+    HOPR = 1
 
 class Account(RootApi):
     """
@@ -16,42 +22,55 @@ class Account(RootApi):
     def __init__(self) -> None:
         super().__init__()
 
-    def withdraw(self, currency: Currency, amount: int, recipient: str) -> None:
+    def withdraw(self, nodeIndex: int, balanceType: BalanceType, amount: int, recipient: str) -> str:
         """
         Withdraw funds from this node to your ethereum wallet address. You can choose whitch currency you want to withdraw, NATIVE or HOPR.
+        :recipient: ETH address where the funds will be sent to
         """
-        pass
-
-    def get_node_balance(self, nodeIndex: int, currency: Currency) -> int:
-        """
-        Get node's HOPR and native balances. HOPR tokens from this balance is used to fund payment channels between this node and other
-        nodes on the network. NATIVE balance is used to pay for the gas fees for the blockchain network.
-        """
-        url = 'http://{baseUrl}:{port}/{serverUrl}/{balances}'.format(
-            baseUrl = self.get_base_hostname(),
-            port = self.get_port(nodeIndex),
-            serverUrl = self.get_server_url(),
-            balances = urls.Urls.ACCOUNT_BALANCES
-        )
+        url = self.get_rest_url(nodeIndex, urls.Urls.ACCOUNT_WITHDRAW)
+        payload = {
+            "currency": balanceType.name,
+            "amount": str(amount),
+            "recipient": recipient
+        }
+        print('url = {}, payload = {}'.format(url, payload))
         restService = restApiService.RestApiService(self.get_auth_token())
-        response = restService.get_request(url)
-
+        response: Response = restService.post_request(url, payload)
         if response.status_code == 200:
-            if currency == Currency.NATIVE:
-                nativeBalance = response.json()["native"]
-                return int(nativeBalance)
-            elif currency == Currency.HOPR:
-                hoprBalance = response.json()["hopr"]
-                return int(hoprBalance)
+            # Withdraw successful. Receipt from this response can be used to check details of the transaction on ethereum network.
+            return response.json()['receipt']
         else:
-            # Handle errors according to the Swagger API specs
             self.handle_http_error(response)
+    
+    def get_balance(self, nodeIndex: int) -> balance.Balance:
+        """
+        Get node's HOPR and NATIVE balances.
+        HOPR tokens from this balance is used to fund payment channels between this node and other nodes on the network.
+        NATIVE balance is used to pay for the gas fees for the blockchain network.
+        :nodeIndex:
+        :return:
+        """
+        restService = restApiService.RestApiService(self.get_auth_token())
+        data = restService.get_request(nodeIndex, urls.Urls.ACCOUNT_BALANCES)
+        return balance.Balance(
+            int(data[BalanceType.NATIVE.name.lower()]),
+            int(data[BalanceType.HOPR.name.lower()]))
+    
+    def get_balances(self, nodeIndex):
+        """
+        :nodeIndex: The index of the node for which the balances need to be fetched
+        :return: A Balances object with both NATIVE and HOPR balances for a certain node index
+        """
+        balanceNative = self.get_balance(nodeIndex, BalanceType.NATIVE)
 
-    def get_address(self) -> None:
+
+    def get_address(self, nodeIndex, address: Address) -> str:
         """
         Get node's HOPR and native addresses. HOPR address is also called PeerId and can be used by other node owner to interact with this node.
         """
-        pass
+        restService = restApiService.RestApiService(self.get_auth_token())
+        data = restService.get_request(nodeIndex, urls.Urls.ACCOUNT_ADDRESSES)
+        return data[address.name.lower()]
 
     def other_utility_method_around_these_APIs(self) -> None:
         """
