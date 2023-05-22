@@ -1,4 +1,4 @@
-name: HOPR Unit Tests
+name: HOPR Test Automation Solution (TAS)
 
 # Controls when the workflow will run
 on:
@@ -80,7 +80,7 @@ jobs:
           pip show websocket-client
       - name: Wait for services to be available
         run: python3 wait_for_services.py
-      - name: Run Unit Tests
+      - name: Run Integration Tests
         run: pytest -v tests_integration/
   
   system-test-runner:
@@ -118,7 +118,7 @@ jobs:
           pip show websocket-client
       - name: Wait for services to be available
         run: python3 wait_for_services.py
-      - name: Run Unit Tests
+      - name: Run System Tests
         run: pytest -v tests_system/
   
   e2e-test-runner:
@@ -156,7 +156,7 @@ jobs:
           pip show websocket-client
       - name: Wait for services to be available
         run: python3 wait_for_services.py
-      - name: Run Unit Tests
+      - name: Run End-to-End Tests
         run: pytest -v tests_e2e/
   
   performance-test-runner:
@@ -194,5 +194,5 @@ jobs:
           pip show websocket-client
       - name: Wait for services to be available
         run: python3 wait_for_services.py
-      - name: Run Unit Tests
+      - name: Run Performance Tests
         run: pytest -v tests_performance/

@@ -91,7 +91,7 @@ class Output:
         Input(sender = 1, receiver = 2, message = 'Hello from future', path = [], hops = 1),
         Output(expectedStatusCode = 202, expectedStatus = None, expectedErrorMessage = None)
     ),
-    # 1st success run: 202
+    # 1st run: 202
     # 2nd run: 422 UNKNOWN_FAILURE 'Error while creating packet.'
     # According to Swagger documentation, path and hops should be optional parameters, and 'hops' is
     # anyway ignored if a 'path' is given.

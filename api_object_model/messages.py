@@ -5,6 +5,7 @@ import services.ws_api_service as wsApiService
 from requests import Response
 from websocket import WebSocketTimeoutException
 import json
+import time
 
 class Messages(RootApi):
     """
@@ -40,16 +41,13 @@ class Messages(RootApi):
             self.handle_http_error(response)
         return response.status_code
     
-    def check_node_does_not_get_message(self, nodeIndex: int, path: str, timeout: int = 5) -> None:
+    def check_node_does_not_get_message(self, nodeIndex: int, webSocket: wsApiService.WebsocketClientService, timeout: int = 5) -> None:
         """
         Checking that a certain node does not get the message in a specified timeout.
         """
-        wsUrl = self.get_ws_url(nodeIndex, path)
-        webSocket = wsApiService.WebsocketClientService()
-        webSocket.create_client_connection(nodeIndex, path, timeout)
         try:
             message = webSocket.receive_message()
-            assert 'At least one of the other nodes received the message. Node: {0} Message: {1}'.format(wsUrl, message)
+            assert 'Node {} received the message when it should not have'.format(nodeIndex)
         except WebSocketTimeoutException:
             # Timeout hit, as expected, just close the WS client connection
             webSocket.close_client_connection()

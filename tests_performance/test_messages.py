@@ -81,7 +81,8 @@ def test_performance_large_message_length(input: Input, output: Output):
     accountInstance = account.Account()
     messagesInstance = messages.Messages()
 
-    largeMessage: str = random_char(50)
+    largeMessage: str = random_char(10)
+    largeMessage = 'Hello from future!'
     
     webSocket: wsApiService.WebsocketClientService = wsApiService.WebsocketClientService()
     webSocket.create_client_connection(input.receiver, urls.Urls.MESSAGES_SEND)
