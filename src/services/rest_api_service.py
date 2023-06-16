@@ -1,9 +1,12 @@
 import requests
-import api_object_model.root_api as rootApi
-import services.rest_api_service as restApiService
 from requests import Response
 
-class RestApiService(rootApi.RootApi):
+from ..api_object_model.root_api_model import RootApiModel
+
+HTTP_STATUS_CODE_OK = 200
+HTTP_STATUS_CODE_SEND_MESSAGE_OK = 202
+
+class RestApiService(RootApiModel):
     """
     Wrapper utility class over Python requests library used to handle REST API calls
     """
@@ -36,8 +39,9 @@ class RestApiService(rootApi.RootApi):
     
     def post_request(self, url, payload) -> Response:
         """
-        Making a REST GET request and returning the 'Response' object to the caller.
+        Making a REST POST request and returning the 'Response' object to the caller.
         """
+        print(f'payload: {payload}')
         response = requests.post(url, json=payload, headers=self.headers)
         return response
 

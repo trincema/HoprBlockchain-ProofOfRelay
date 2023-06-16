@@ -15,4 +15,5 @@ def test_case1():
     nodeInstance.get_node_info(4)
     nodeInstance.get_node_info(5)
 
-    # ticketsList = List[ticket.Ticket] = ticketsInstance.get_all_tickets(3)
+    ticketsList = List[ticket.Ticket] = ticketsInstance.get_all_tickets(3)
+    assert False

@@ -1,9 +1,9 @@
-from .root_api import RootApi
-import test_data.urls as urls
-import services.rest_api_service as restApiService
 from requests import Response
+from .root_api_model import RootApiModel
+from ..test_data.urls import Urls
+from ..services.rest_api_service import RestApiService
 
-class Channels(RootApi):
+class Channels(RootApiModel):
     """
     Channels object wrapper with all useful methods to interact with ...
     """
@@ -17,8 +17,8 @@ class Channels(RootApi):
         incomming and outgoing channels that are either open, waiting to be opened, or waiting to be closed.
         If you also want to receive past channels that were closed, you can pass includingClosed in the request url query.
         """
-        url = self.get_rest_url(nodeIndex, urls.Urls.CHANNELS_ACTIVE_CHANNEL_LIST)
-        restService = restApiService.RestApiService(self.get_auth_token())
+        url = self.get_rest_url(nodeIndex, Urls.CHANNELS_ACTIVE_CHANNEL_LIST)
+        restService = RestApiService(self.get_auth_token())
         response: Response = restService.get_request(url)
         if response.status_code == 200:
             print(response.json())

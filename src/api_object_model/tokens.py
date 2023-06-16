@@ -5,7 +5,7 @@ from requests import Response
 
 class Tokens(RootApi):
     def __init__(self):
-        pass
+        super().__init__()
 
     def get_token(self, nodeIndex) -> str:
         """
