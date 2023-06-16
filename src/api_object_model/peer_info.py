@@ -1,7 +1,8 @@
-from .root_api import RootApi
-import test_data.urls as urls
+from .root_api_model import RootApiModel
 
-class PeerInfo(RootApi):
+from ..test_data.urls import Urls
+
+class PeerInfo(RootApiModel):
     """
     PeerInfo object wrapper with all useful methods to get information about a certain peer/node.
     """
@@ -16,7 +17,7 @@ class PeerInfo(RootApi):
         """
         url = 'http://{baseHostname}{peerInfo}'.format(
             baseHostname = self.get_base_hostname(),
-            peerInfo = urls.Urls.PEER_INFO)
+            peerInfo = Urls.PEER_INFO)
         pass
     
     def other_utility_method_around_these_APIs(self) -> None:

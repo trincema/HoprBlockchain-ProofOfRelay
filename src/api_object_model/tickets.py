@@ -1,41 +1,42 @@
-from typing import List
-from .root_api import RootApi
-import test_data.urls as urls
-import type.ticket as ticket
-import type.ticket_statistics as ticketStatistics
-import services.rest_api_service as restApiService
 import json
+from typing import List
+from .root_api_model import RootApiModel
 
-class Tickets(RootApi):
+from ..test_data.urls import Urls
+from ..type.ticket import Ticket
+from ..type.ticket_statistics import TicketStatistics
+from ..services.rest_api_service import RestApiService
+
+class Tickets(RootApiModel):
     """
     Tickets API object wrapper with all useful methods to interact with tickets in the HOPR network.
     """
 
     def __init__(self) -> None:
         super().__init__()
-        self.restService = restApiService.RestApiService(self.get_auth_token())
+        self.restService = RestApiService(self.get_auth_token())
     
-    def get_all_tickets(self, nodeIndex: int) -> List[ticket.Ticket]:
+    def get_all_tickets(self, nodeIndex: int) -> List[Ticket]:
         """
         Get all tickets earned from every channel by a node by relaying data packets.
         :nodeIndex: The node for which to fetch all the tickets.
         :return: List of Ticket objects with all the tickets.
         """
-        data = self.restService.get_request(nodeIndex, urls.Urls.TICKETS_LIST)
-        tickets: List[ticket.Ticket] = []
+        data = self.restService.get_request(nodeIndex, Urls.TICKETS_LIST)
+        tickets: List[Ticket] = []
         print('data = {}'.format(json.dumps(data)))
         for dataTicket in data:
             # TODO Find a better, generic and shorter way to map this, json.loads() doesn't seem to help much since
             # we also have arrays returned from some of the API calls
-            tickets.append(ticket.Ticket(
-                dataTicket[ticket.TicketKey.COUNTERPARTY.value],
-                dataTicket[ticket.TicketKey.CHALLENGE.value],
-                dataTicket[ticket.TicketKey.EPOCH.value],
-                dataTicket[ticket.TicketKey.INDEX.value],
-                dataTicket[ticket.TicketKey.AMOUNT.value],
-                dataTicket[ticket.TicketKey.WIN_PROB.value],
-                dataTicket[ticket.TicketKey.CHANNEL_EPOCH.value],
-                dataTicket[ticket.TicketKey.SIGNATURE.value]))
+            tickets.append(Ticket(
+                dataTicket[TicketKey.COUNTERPARTY.value],
+                dataTicket[TicketKey.CHALLENGE.value],
+                dataTicket[TicketKey.EPOCH.value],
+                dataTicket[TicketKey.INDEX.value],
+                dataTicket[TicketKey.AMOUNT.value],
+                dataTicket[TicketKey.WIN_PROB.value],
+                dataTicket[TicketKey.CHANNEL_EPOCH.value],
+                dataTicket[TicketKey.SIGNATURE.value]))
         return tickets
     
     def redeem_all_tickets(self, nodeIndex: int) -> None:
@@ -44,13 +45,13 @@ class Tickets(RootApi):
         Every ticket have a chance to be winning one, rewarding you with Hopr tokens.
         :nodeIndex:
         """
-        url = self.get_rest_url(nodeIndex, urls.Urls.TICKETS_REDEEM)
+        url = self.get_rest_url(nodeIndex, Urls.TICKETS_REDEEM)
         payload = {}
         response = self.restService.post_request(url, payload)
         if response.status_code >=  400:
             self.handle_http_error(response)
     
-    def get_tickets_statistics(self, nodeIndex: int, ticketsStatisticsKey: ticketStatistics.TicketStatisticsKey) -> int:
+    def get_tickets_statistics(self, nodeIndex: int, ticketsStatisticsKey: TicketStatisticsKey) -> int:
         """
         Get statistics regarding all your tickets. Node gets a ticket everytime it relays data packet in channel.
         Get a certain statistic value for the given node index.
@@ -63,26 +64,26 @@ class Tickets(RootApi):
     def get_tickets_statistics(self, nodeIndex: int) -> object:
         """
         """
-        data = self.restService.get_request(nodeIndex, urls.Urls.TICKETS_STATISTICS)
+        data = self.restService.get_request(nodeIndex, Urls.TICKETS_STATISTICS)
         print('data = {}'.format(json.dumps(data)))
         # TODO Find a better, generic and shorter way to map this, json.loads() doesn't seem to help much since
         # we also have arrays returned from some of the API calls, or have numbers defined as strings (redeemed/unredeemedValue),
         # so more granular interfacing is needed (at least for these more complicated types)
-        ticketsStatistics = ticketStatistics.TicketStatistics(
-            data[ticketStatistics.TicketStatisticsKey.PENDING.value],
-            data[ticketStatistics.TicketStatisticsKey.UNREDEEMED.value],
-            int(data[ticketStatistics.TicketStatisticsKey.UNREDEEMED_VALUE.value]),
-            int(data[ticketStatistics.TicketStatisticsKey.REDEEMED.value]),
-            data[ticketStatistics.TicketStatisticsKey.REDEEMED_VALUE.value],
-            data[ticketStatistics.TicketStatisticsKey.LOSING_TICKETS.value],
-            data[ticketStatistics.TicketStatisticsKey.WIN_PROPORTION.value],
-            data[ticketStatistics.TicketStatisticsKey.NEGLECTED.value],
-            data[ticketStatistics.TicketStatisticsKey.REJECTED.value],
-            data[ticketStatistics.TicketStatisticsKey.REJECTED_VALUE.value])
+        ticketsStatistics = TicketStatistics(
+            data[TicketStatisticsKey.PENDING.value],
+            data[TicketStatisticsKey.UNREDEEMED.value],
+            int(data[TicketStatisticsKey.UNREDEEMED_VALUE.value]),
+            int(data[TicketStatisticsKey.REDEEMED.value]),
+            data[TicketStatisticsKey.REDEEMED_VALUE.value],
+            data[TicketStatisticsKey.LOSING_TICKETS.value],
+            data[TicketStatisticsKey.WIN_PROPORTION.value],
+            data[TicketStatisticsKey.NEGLECTED.value],
+            data[TicketStatisticsKey.REJECTED.value],
+            data[TicketStatisticsKey.REJECTED_VALUE.value])
         return ticketsStatistics
     
     def _get_tickets_statistics(self, nodeIndex: int, statisticKey: str) -> str:
         """
         """
-        data = self.restService.get_request(nodeIndex, urls.Urls.TICKETS_STATISTICS)
+        data = self.restService.get_request(nodeIndex, Urls.TICKETS_STATISTICS)
         return int(data[statisticKey])

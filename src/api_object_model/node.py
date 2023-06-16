@@ -1,21 +1,20 @@
-from .root_api import RootApi
-from .account import Account, Address
-import test_data.urls as urls
-import services.rest_api_service as restApiService
-from requests import Response
-import streamtologger
 import json
 import time
 
-streamtologger.redirect()
+from .root_api_model import RootApiModel
+from .account.account import Account
+from .account.address import Address
 
-class Node(RootApi):
+from ..test_data.urls import Urls
+from ..services.rest_api_service import RestApiService
+
+class Node(RootApiModel):
     """
     Node object wrapper with all useful methods to interact with a certain node in the HOPR network.
     """
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def get_peer_id(self, nodeIndex) -> str:
         """
@@ -33,9 +32,9 @@ class Node(RootApi):
         :peerId: The peer that announced itself to the node
         :return: 
         """
-        restService = restApiService.RestApiService(self.get_auth_token())
+        restService = RestApiService(self.get_auth_token())
         while True:
-            data = restService.get_request(nodeIndex, urls.Urls.NODE_PEER_LIST)
+            data = restService.get_request(nodeIndex, Urls.NODE_PEER_LIST)
             print("Response: {}".format(json.dumps(data)))
             found = False
             lastSeenList = data["announced"]
@@ -63,6 +62,6 @@ class Node(RootApi):
     def get_node_info(self, nodeIndex: int):
         """
         """
-        restService = restApiService.RestApiService(self.get_auth_token())
-        data = restService.get_request(nodeIndex, urls.Urls.NODE_INFO)
+        restService = RestApiService(self.get_auth_token())
+        data = restService.get_request(nodeIndex, Urls.NODE_INFO)
         print(data)

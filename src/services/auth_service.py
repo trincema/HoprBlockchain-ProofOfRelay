@@ -1,4 +1,4 @@
-import test_data.connection_data as connectionData
+from ..test_data.connection_data import ConnectionData
 
 class AuthenticationService:
 
@@ -11,4 +11,4 @@ class AuthenticationService:
         Return hardcoded API token for now, would be interesting to use Tokens wrapper to create
         a new token for each test, or for all the test session, but depends on the test environment setup of the TAS project.
         """
-        return connectionData.ConnectionData.AUTH_TOKEN
+        return ConnectionData.AUTH_TOKEN

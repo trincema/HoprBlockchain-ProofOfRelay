@@ -1,7 +1,7 @@
-from .root_api import RootApi
-import test_data.urls as urls
+from .root_api_model import RootApiModel
+from ..test_data.urls import Urls
 
-class Aliases(RootApi):
+class Aliases(RootApiModel):
     """
     Aliases object wrapper with all useful methods to interact with a certain node addresses, balances, and withdrawals.
     """

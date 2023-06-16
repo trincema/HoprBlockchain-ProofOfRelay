@@ -24,7 +24,6 @@ For example, messages feature has to interact with the node feature, because the
 to messages APIs, we need the Tokens feature to obtain an authentication token, etc.
 - System tests: we check how the system performs overall, it is usually performed after Integration testing. It is carried out for performing both
 functional and non-functional testing (performance, fuzz). Since the testing is limited to the evaluation of functional requirements, hence, it includes black-box testing techniques only.
-- Acceptance tests: 
 
 ## Project Setup
 In order to setup the project we need to run the following commands (Ubuntu)
@@ -33,6 +32,12 @@ In order to setup the project we need to run the following commands (Ubuntu)
 - `docker run --rm -d --network host --name pluto_cluster gcr.io/hoprassociation/hopr-pluto:1.92.7`
 - `docker logs -f pluto_cluster`
 - We use host network mode by adding `--network host` to the original command so that we can do a port-mapping to localhost
+
+## Docker Setup and run
+- Run docker build: `docker build -t <image>`
+- Open a terminal for an image: `docker run --rm -ti 8a773166616c /bin/bash`
+- Running the image: `docker run --rm -d --network host --name pluto_cluster gcr.io/hoprassociation/hopr-pluto:1.92.7`
+- Find container id: `docker ps`
 
 ## Running tests
 Unit tests are just built with the purpose to test the TAS wrapper library itself, but you should run the integration tests.

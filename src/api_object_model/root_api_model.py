@@ -1,7 +1,7 @@
-import test_data.connection_data as connectionData
-import services.auth_service as authService
+from ..test_data.connection_data import ConnectionData
+from ..services.auth_service import AuthenticationService
 
-class RootApi:
+class RootApiModel:
     """
     Root API object from which all other HOPR API objects will inherit common functionality.
     """
@@ -14,13 +14,13 @@ class RootApi:
         Return hardcoded API token for now, would be interesting to use Tokens wrapper to create
         a new token for each test, or for all the test session, but depends on the test environment setup of the TAS project.
         """
-        return authService.AuthenticationService.get_auth_token()
+        return AuthenticationService.get_auth_token()
 
     def get_base_hostname(self) -> str:
         """
         Return the base URL of the API, based on the test environment (or CI/CD) setup
         """
-        return connectionData.ConnectionData.BASE_HOSTNAME
+        return ConnectionData.BASE_HOSTNAME
     
     def get_port(self, nodeIndex) -> str:
         """
@@ -28,7 +28,7 @@ class RootApi:
         The port can be computed/aquired dinamically here, depending on the test environment setup of the TAS project.
         """
         port = "{basePort}{nodeIndex}".format(
-            basePort = connectionData.ConnectionData.BASE_PORT,
+            basePort = ConnectionData.BASE_PORT,
             nodeIndex = nodeIndex)
         return port
     
@@ -37,7 +37,7 @@ class RootApi:
         Getting the server URL to prepend in front of the API url.
         The server URL can be aquired dinamically here depending on the test environment setup of the TAS project.
         """
-        return connectionData.ConnectionData.SERVER_URL
+        return ConnectionData.SERVER_URL
     
     def get_rest_url(self, nodeIndex, path) -> str:
         """
@@ -92,6 +92,11 @@ class RootApi:
             ))
         elif response.status_code == 422:
             raise Exception('Unknown failure. status: {status} error: {error}'.format(
+                status = response.json()['status'],
+                error = response.json()['error']
+            ))
+        elif response.status_code == 500:
+            raise Exception('Server error. status: {status} error: {error}'.format(
                 status = response.json()['status'],
                 error = response.json()['error']
             ))

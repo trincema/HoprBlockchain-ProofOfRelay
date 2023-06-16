@@ -1,8 +1,25 @@
+from typing import List
+from datetime import datetime
+from websocket import WebSocket
 from websocket import create_connection
 from websocket import WebSocketTimeoutException
-import api_object_model.root_api as rootApi
+from ..api_object_model.root_api_model import RootApiModel
 
-class WebsocketClientService(rootApi.RootApi):
+class Message(object):
+    def __init__(self) -> None:
+        self.message: str
+        self.timestamp: int
+
+class WebsocketClientService2(RootApiModel):
+    """
+    Websocket client wrapper service with the purpose to manage one websocket client connection.
+    """
+
+    def __init__(self, nodeIndex, path, timeout = 30) -> None:
+        self.receivedMessages: List[Message] = []
+        
+
+class WebsocketClientService(RootApiModel):
     """
     Websocket client wrapper service with the purpose to manage one websocket client connection.
     """
